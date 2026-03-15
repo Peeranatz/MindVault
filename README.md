@@ -1,133 +1,313 @@
-# 🧠✨ MindVault AI (สมุดบันทึกดูแลใจด้วย AI)
+# MindVault
 
-MindVault คือเว็บแอปพลิเคชันสำหรับเขียนไดอารี่และดูแลสุขภาพจิตส่วนบุคคล ที่นำพลังของ AI (Google Gemini) และเทคโนโลยี RAG (Retrieval-Augmented Generation) มาช่วยในการให้คำปรึกษา เป็นพื้นที่ปลอดภัยให้คุณได้ระบายความรู้สึก โดย AI จะปรับวิธีการตอบกลับและความเห็นอกเห็นใจให้เข้ากับบุคลิกภาพ (MBTI) ของคุณ พร้อมแนะนำข้อมูลด้านสุขภาพจิตที่เชื่อถือได้
+MindVault is a mental wellness journaling web app powered by AI. It is designed as a safe space where users can write daily thoughts, receive empathetic responses, and get grounded self-care guidance supported by a lightweight RAG knowledge flow.
 
----
+This project includes:
+- A Next.js frontend for user and doctor experiences
+- A FastAPI backend for auth, journaling, MBTI, doctor workflows, and RAG retrieval
+- SQLite for local development
+- Gemini integration for response generation and clinical-style summaries
 
-## 🌟 ฟีเจอร์หลัก (Key Features)
+## 1. What This Project Does
 
-- **AI ที่แสนอบอุ่นและเข้าใจคุณ:** ปรับโทนการพูดคุยตามบุคลิกภาพ MBTI ของผู้ใช้งาน (เช่น INFP, INTJ) เพื่อให้รู้สึกเหมือนคุยกับเพื่อนที่เข้าใจเราจริงๆ
-- **อ้างอิงข้อมูลที่เชื่อถือได้ (RAG):** เมื่อคุณพิมพ์ข้อความที่เกี่ยวกับปัญหาหัวใจหรือความเครียด ระบบจะดึงข้อมูลวิชาการด้านจิตวิทยาหรือวิธีรับมือมาประกอบการตอบ (Knowledge Snippets)
-- **ระบบแจ้งเตือนเมื่อตกอยู่ในภาวะวิกฤต (Crisis Detection):** หาก AI ตรวจจับคำที่สื่อถึงการทำร้ายตัวเองหรือภาวะซึมเศร้าขั้นรุนแรง ระบบจะแสดงหน้าจอแจ้งเตือนพร้อมเบอร์สายด่วนสุขภาพจิต (1323) ทันที
-- **วิเคราะห์อารมณ์และกระบวนการคิด (Mood & Cognitive Analysis):** ประเมินระดับอารมณ์และตรวจจับความคิดลบที่บิดเบือนจากความเป็นจริง (เช่น การคิดแบบขาวดำ All-or-Nothing)
-- **UI ทันสมัย สบายตา:** พัฒนาด้วย Next.js และ Tailwind CSS ออกแบบมาให้ใช้งานง่ายและรู้สึกผ่อนคลาย
+MindVault supports two main roles:
+- User:
+  - Register/login
+  - Complete MBTI assessment
+  - Write journal entries and receive AI responses
+  - See RAG source snippets used to ground suggestions
+- Doctor:
+  - Connect with patients (manual + QR invite flow)
+  - View patient list and search
+  - Open patient profile page with summary stats and AI-generated clinical-style overview
 
----
+Core features:
+- MBTI-aware response tone
+- Mood estimation and basic cognitive distortion labeling
+- Crisis phrase detection with hotline guidance
+- RAG source popup with readable Thai-friendly references
+- Doctor invite token + QR registration flow
 
-## 🛠️ เทคโนโลยีที่ใช้ (Tech Stack)
+## 2. Tech Stack
 
-- **Frontend:** Next.js (React), Tailwind CSS, TypeScript
-- **Backend:** FastAPI (Python), SQLite (สำหรับฐานข้อมูล)
-- **AI Integration:** Google Generative AI (Gemini 2.5 Flash)
+Frontend:
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Axios
+- qrcode.react
 
----
+Backend:
+- FastAPI
+- SQLAlchemy
+- Pydantic v2
+- python-jose (JWT)
+- bcrypt/passlib
+- google-generativeai
 
-## 🚀 คู่มือการติดตั้งสำหรับมือใหม่ (Step-by-Step Guide)
+Database:
+- SQLite (default local)
 
-ทำตามขั้นตอนด้านล่างนี้ คุณก็สามารถรันโปรเจกต์นี้ในเครื่องตัวเองได้เลย!
+## 3. Repository Layout
 
-### 📌 สิ่งที่ต้องมีก่อนเริ่ม (Prerequisites)
-ก่อนจะเริ่ม ให้ดาวน์โหลดและติดตั้งโปรแกรมเหล่านี้ในเครื่องของคุณ (ถ้ายังไม่มี):
-1. **[Git](https://git-scm.com/downloads)** - สำหรับดาวน์โหลดโค้ด
-2. **[Node.js](https://nodejs.org/)** (แนะนำเวอร์ชัน 18 ขึ้นไป) - สำหรับฝั่ง Frontend
-3. **[Python](https://www.python.org/downloads/)** (แนะนำเวอร์ชัน 3.10 ขึ้นไป) - อย่าลืมติ๊กถูกที่ `Add Python to PATH` ตอนติดตั้งด้วย - สำหรับฝั่ง Backend
-4. **Google Gemini API Key** - ไปสมัครและรับคีย์ฟรีได้ที่ [Google AI Studio](https://aistudio.google.com/app/apikey)
+Top-level structure:
 
----
+- `backend/`
+  - API routes (`auth`, `journal`, `doctor`, `connect`, `mbti`)
+  - Core services (`llm_engine`, `rag_service`, `mbti_logic`)
+  - Database setup and ORM models
+- `frontend/`
+  - App routes for auth/user/doctor
+  - Shared components (toast/loading/nav/RAG popup)
+  - Axios API client
+- `chunking_sky.txt`
+  - Chunked knowledge file used by RAG retriever
+- `run.bat`
+  - Starts backend and frontend on Windows
+- `start_backend.bat` / `start_frontend.bat`
+  - Service-level startup scripts
 
-### ขั้นตอนที่ 1: ดาวน์โหลดโค้ดมาที่เครื่อง (Clone Repository)
+## 4. Prerequisites
 
-เปิดโปรแกรม Command Prompt (CMD) หรือ PowerShell แล้วพิมพ์คำสั่งต่อไปนี้เพื่อดาวน์โหลดโฟลเดอร์โปรเจกต์:
+Install before running:
+- Git
+- Python 3.10+ (3.11 recommended)
+- Node.js 18+ (or 20 LTS)
+
+Windows note:
+- If `git` is not found in terminal, reopen terminal after Git install or add Git to PATH.
+- If `npm` is not found, ensure Node.js install path is available in PATH.
+
+## 5. Quick Start (Windows, Easiest)
+
+1. Clone repository:
 
 ```bash
 git clone https://github.com/Peeranatz/MindVault.git
 cd MindVault
 ```
 
----
+2. Backend setup:
 
-### ขั้นตอนที่ 2: ตั้งค่าระบบหลังบ้าน (Backend - Python)
-
-1. เข้าไปที่โฟลเดอร์ backend:
 ```bash
 cd backend
-```
-
-2. (ทางเลือกที่แนะนำ) สร้างสภาพแวดล้อมจำลอง (Virtual Environment) เพื่อไม่ให้ไลบรารีไปรบกวนระบบในเครื่อง:
-```bash
 python -m venv venv
-```
-สำหรับ Windows รันสคริปต์เพื่อเปิดใช้งาน: 
-```bash
-venv\Scripts\activate
-```
-
-3. ติดตั้งฟังก์ชันและไลบรารีที่ระบบพึ่งพา:
-```bash
-pip install -r requirements.txt
-```
-
-4. **สำคัญมาก!** สร้างไฟล์ชื่อ `.env` ไว้ในโฟลเดอร์ `backend` แล้วใส่ API Key ที่คุณได้จาก Google ลงไป เช่น:
-```
-GEMINI_API_KEY=รหัสของคุณที่นี่
-```
-
-5. ถอยกลับมาที่โฟลเดอร์หลัก:
-```bash
+venv\Scripts\pip install -r requirements.txt
 cd ..
 ```
 
----
+3. Frontend setup:
 
-### ขั้นตอนที่ 3: ตั้งค่าระบบหน้าบ้าน (Frontend - Node.js)
-
-1. เข้าไปที่โฟลเดอร์ frontend:
 ```bash
 cd frontend
-```
-
-
-2. ติดตั้งแพ็กเกจที่ระบบหน้าบ้านต้องการ:
-```bash
 npm install
-```
-
-3. ถอยกลับมาที่โฟลเดอร์หลัก:
-```bash
 cd ..
 ```
 
----
+4. Create backend environment file at `backend/.env`:
 
-### ขั้นตอนที่ 4: การเปิดระบบเพื่อใช้งาน (Run Project)
-
-**📌 วิธีที่ 1: สำหรับผู้ใช้ Windows (วิธีที่ง่ายที่สุด)**
-เข้าไปในโฟลเดอร์โปรเจกต์ `MindVault` แล้วดับเบิลคลิกไฟล์ **`run.bat`** (หรือพิมพ์คำสั่ง `.\run.bat` ใน Terminal)
-ระบบจะทำการเปิดหน้าต่าง Terminal ขึ้นมา 2 อัน เพื่อรันทั้งส่วนหน้าบ้านและหลังบ้านให้พร้อมกันทันที
-
-**📌 วิธีที่ 2: เปิดแยกทีละส่วนด้วยตัวเอง**
-
-หน้าต่าง Terminal ที่ 1 (เปิด Backend):
-```bash
-cd backend
-uvicorn main:app --port 8001 --reload
+```env
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY
+SECRET_KEY=YOUR_STRONG_RANDOM_SECRET
+DATABASE_URL=sqlite:///./app.db
+JWT_EXPIRE_MINUTES=60
+APP_ENV=development
 ```
 
-หน้าต่าง Terminal ที่ 2 (เปิด Frontend):
+Notes:
+- `SECRET_KEY` should be unique and private.
+- `DATABASE_URL` can stay as SQLite for local development.
+
+5. Start everything:
+
+```bash
+run.bat
+```
+
+After startup:
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8001`
+- API Docs: `http://localhost:8001/docs`
+
+## 6. Manual Start (Alternative)
+
+Backend terminal:
+
+```bash
+cd backend
+venv\Scripts\python.exe -m uvicorn backend.main:app --port 8001 --reload
+```
+
+Frontend terminal:
+
 ```bash
 cd frontend
 npm run dev
 ```
 
-เสร็จแล้ว! รอสักครู่แล้วเข้าไปใช้งานหน้าเว็บผ่านเบราว์เซอร์ของคุณได้เลยที่: `http://localhost:3000` ซี่งบางครั้งอาจเป็น `http://localhost:3001` ให้ลองดูลิงก์ที่แสดงอยู่บนหน้าต่าง Terminal
+## 7. Environment Variables
+
+Primary variables used by backend:
+
+- `GEMINI_API_KEY`
+  - Required for Gemini-based text generation and summary features
+- `SECRET_KEY`
+  - JWT signing key
+- `DATABASE_URL`
+  - Defaults to `sqlite:///./app.db`
+- `JWT_EXPIRE_MINUTES`
+  - Access token expiry (default `60`)
+- `APP_ENV`
+  - Optional app environment hint
+- `GEN_LANG_CLIENT`
+  - Legacy fallback key field (optional)
+
+Security:
+- Never commit real API keys.
+- `backend/.env` is ignored by git.
+
+## 8. API Overview
+
+Auth:
+- `POST /auth/register`
+- `POST /auth/login`
+- `GET /auth/me`
+
+Journal:
+- `POST /journal`
+- `GET /journal`
+
+MBTI:
+- `POST /mbti/analyze`
+
+Doctor:
+- `POST /doctor/connect`
+- `GET /doctor/patients`
+- `GET /doctor/patients/{patient_id}/summary`
+- `GET /doctor/patients/{patient_id}/profile`
+- `POST /doctor/invite`
+- `GET /doctor/invite/{token}`
+
+Connection workflow:
+- `GET /connect/requests`
+- `POST /connect/handle`
+
+Health:
+- `GET /health`
+
+## 9. RAG Knowledge Setup
+
+MindVault RAG retriever looks for knowledge files in this order:
+1. `chunking_sky.txt`
+2. `knowledge_base.txt`
+
+Supported formats:
+- JSON with `knowledge_chunks` array (recommended)
+- Plain text paragraphs (fallback split by blank lines)
+
+Recommended JSON shape:
+
+```json
+{
+  "knowledge_chunks": [
+    {
+      "chunk_id": "breathing_001",
+      "topic": "เทคนิคการหายใจ",
+      "content": "หายใจเข้าช้าๆ 1-4 กลั้น 1-4 ผ่อนออก 1-8"
+    }
+  ]
+}
+```
+
+RAG behavior:
+- Scores by Thai/English token overlap and char n-gram similarity
+- Prioritizes actionable guidance topics
+- Returns concise Thai-friendly bullet snippets in the UI popup
+
+## 10. Testing Checklist
+
+Use this checklist after setup:
+
+1. Auth and role flow:
+- Register a user account and a doctor account
+- Login both successfully
+
+2. User flow:
+- Complete MBTI
+- Submit journal text
+- Verify AI response appears
+- Click RAG source button and verify references are readable
+
+3. Doctor flow:
+- Generate doctor QR invite
+- Register user with invite token
+- Confirm patient appears in doctor dashboard
+- Open patient profile route and verify summary data
+
+4. Reliability checks:
+- Restart backend and frontend
+- Verify app still works with same `.env`
+
+## 11. Troubleshooting
+
+### A. `401 Unauthorized` on frontend requests
+Possible causes:
+- Expired/invalid token in browser localStorage
+- Backend restarted with different auth state
+
+Fix:
+- Logout/login again
+- Clear localStorage token and re-authenticate
+
+### B. RAG popup shows no references
+Possible causes:
+- Knowledge file is empty
+- Query does not match any chunk strongly
+
+Fix:
+- Ensure `chunking_sky.txt` has valid content
+- Use prompt with clear keywords related to your KB topics
+
+### C. `git` command not found on Windows
+Fix:
+- Install Git for Windows
+- Reopen terminal
+- Or use full path: `C:\Program Files\Git\cmd\git.exe`
+
+### D. Frontend style or static asset issues
+Fix:
+- Stop duplicate dev servers
+- Restart `npm run dev`
+- Clear `.next` if needed
+
+## 12. Git Workflow Recommendation
+
+Before push:
+- Ensure secrets are not in tracked files
+- Keep `.env` local only
+- Avoid committing local runtime files
+
+Current ignore policy includes:
+- `.env` files
+- runtime logs
+- Python caches
+- Node build artifacts
+- local backend runtime output files
+
+## 13. Notes for Future Contributors
+
+If you continue development, suggested next enhancements:
+- Add automated tests for API routes
+- Add migrations (Alembic) instead of auto table creation
+- Improve role-based route guards and error UX
+- Add observability logs for LLM/RAG decision traces
+- Replace deprecated `google-generativeai` SDK with newer official client when ready
+
+## 14. Disclaimer
+
+MindVault is a supportive journaling assistant, not a medical diagnosis tool. For immediate self-harm risk or mental health crisis, contact local emergency services or mental health hotlines (Thailand: 1323).
 
 ---
 
-## 🔒 ข้อมูลส่วนบุคคลและความเป็นส่วนตัว (Privacy)
-ข้อมูลบันทึกไดอารี่และบัญชีผู้ใช้ทั้งหมดของคุณจะถูกบันทึกไว้ในไฟล์ `app.db` ในโหมด local ซึ่ง **อยู่ในเครื่องของคุณเท่านั้น** และข้อมูลถูกส่งไปยัง Gemini API เฉพาะตอนที่ต้องการประมวลผลคำตอบแบบ Real-time โดยไม่ได้มีการเก็บข้อมูลลงในเซิร์ฟเวอร์บนระบบคลาวด์อื่น
-
----
-
-*สร้างด้วย 💖 เพื่อมอบรอยยิ้มและสุขภาพใจที่ดีให้กับทุกคน!*
-
-
+Built for practical mental wellness support and transparent AI-assisted journaling.

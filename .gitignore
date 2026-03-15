@@ -11,6 +11,7 @@ backend/.env
 backend/.env.local
 backend/*.db
 backend/sqlite*.db
+app.db
 
 # Node/Next.js
 node_modules/
