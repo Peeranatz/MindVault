@@ -43,3 +43,7 @@ htmlcov/
 
 # Build artifacts
 *.log
+
+# Local runtime outputs
+backend_out.txt
+backend_err.txt
