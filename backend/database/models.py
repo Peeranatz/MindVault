@@ -6,6 +6,20 @@ from sqlalchemy.orm import relationship
 from .db_setup import Base
 
 
+# Phase 2: InviteToken สำหรับระบบ QR Code เชิญผู้ป่วย
+class InviteToken(Base):
+    __tablename__ = "invite_tokens"
+
+    id = Column(Integer, primary_key=True, index=True)
+    token = Column(String(64), unique=True, index=True, nullable=False)
+    doctor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    used = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    doctor = relationship("User", foreign_keys=[doctor_id])
+
+
 class User(Base):
     __tablename__ = "users"
 

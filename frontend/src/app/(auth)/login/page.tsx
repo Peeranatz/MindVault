@@ -8,7 +8,7 @@ import { getApi } from "../../../lib/api";
 import { ToastMessage, ToastStack } from "../../../components/Toast";
 import { LoadingOverlay } from "../../../components/LoadingOverlay";
 
-const API = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
+const API = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8001";
 
 type UserMe = {
   id: number;

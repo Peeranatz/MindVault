@@ -32,6 +32,8 @@ class UserCreate(BaseModel):
     role: str = Field("user", pattern="^(user|doctor)$")
     mbti_type: Optional[str] = None
     doctor_code: Optional[str] = None
+    # ฟีเจอร์ที่ 3: รับ invite_token จาก QR Code
+    invite_token: Optional[str] = None
 
 
 class UserOut(BaseModel):
@@ -139,6 +141,28 @@ def register(user_in: UserCreate, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
+    # ฟีเจอร์ที่ 3: ถ้ามี invite_token ให้เชื่อมกับแพทย์โดยอัตโนมัติและเงียบๆ
+    if user_in.invite_token:
+        invite = (
+            db.query(models.InviteToken)
+            .filter(
+                models.InviteToken.token == user_in.invite_token,
+                models.InviteToken.used == False,  # noqa: E712
+                models.InviteToken.expires_at > datetime.utcnow(),
+            )
+            .first()
+        )
+        if invite:
+            conn = models.Connection(
+                doctor_id=invite.doctor_id,
+                patient_id=new_user.id,
+                status="active",
+            )
+            db.add(conn)
+            invite.used = True
+            db.commit()
+
     return new_user
 
 

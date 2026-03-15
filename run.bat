@@ -1,14 +1,22 @@
 @echo off
 echo ===================================================
-echo Starting MindVault-V2
+echo   MindVault - Starting All Services
 echo ===================================================
 
-echo Starting Backend (FastAPI on port 8001)...
-start cmd /k "cd /d %~dp0 && python -m uvicorn backend.main:app --port 8001 --reload"
+echo [1/2] Starting Backend (FastAPI on port 8001)...
+start "MindVault Backend" cmd /k "%~dp0start_backend.bat"
 
-echo Starting Frontend (Next.js)...
-start cmd /k "cd /d %~dp0frontend && npm run dev"
+timeout /t 3 /nobreak >nul
 
-echo Both services are starting up in new windows!
-echo Backend API: http://127.0.0.1:8001
-echo Frontend URL: http://localhost:3000 (or 3001)
+echo [2/2] Starting Frontend (Next.js)...
+start "MindVault Frontend" cmd /k "%~dp0start_frontend.bat"
+
+echo.
+echo Both services are starting in separate windows.
+echo.
+echo   Backend API : http://localhost:8001
+echo   Frontend    : http://localhost:3000
+echo   API Docs    : http://localhost:8001/docs
+echo.
+echo Press any key to close this window...
+pause >nul

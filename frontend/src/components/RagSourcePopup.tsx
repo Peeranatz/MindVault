@@ -44,7 +44,7 @@ export const RagSourcePopup: React.FC<Props> = ({
           {sources.map((s, i) => (
             <div
               key={i}
-              className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm leading-relaxed"
+              className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-sm leading-relaxed whitespace-pre-line"
             >
               {s}
             </div>

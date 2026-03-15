@@ -8,7 +8,7 @@ import { getApi } from "../../../lib/api";
 import { ToastMessage, ToastStack } from "../../../components/Toast";
 import { LoadingOverlay } from "../../../components/LoadingOverlay";
 
-const API = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
+const API = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8001";
 
 type Journal = {
   id: number;
@@ -40,8 +40,6 @@ const distortionLibrary: Record<
   },
 };
 
-const ragSamples: string[] = [];
-
 export default function ChatPage() {
   const router = useRouter();
   const api = useMemo(() => getApi(), []);
@@ -51,7 +49,7 @@ export default function ChatPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [sources, setSources] = useState<string[]>([]);
-  const [doctorCode, setDoctorCode] = useState("");
+  // แก้ไขที่ 2: ลบ doctorCode state ออก (ผู้ใช้ทั่วไปไม่ควรเห็นฟีเจอร์เชื่อมแพทย์)
   const [hasMbti, setHasMbti] = useState<boolean>(true);
   const [mbtiType, setMbtiType] = useState<string | null>(null);
   const [crisisAlert, setCrisisAlert] = useState<boolean>(false);
@@ -127,28 +125,12 @@ export default function ChatPage() {
     }
   };
 
-  const handleConnectDoctor = async () => {
-    setError(null);
-    try {
-      await api.post(`${API}/connect/request`, {
-        doctor_code: doctorCode.trim(),
-      });
-      setDoctorCode("");
-      pushToast({ kind: "success", message: "ส่งคำขอเชื่อมต่อถึงแพทย์แล้ว" });
-    } catch (err: any) {
-      const detail = err?.response?.data?.detail || "ส่งคำขอไม่สำเร็จ";
-      setError(detail);
-      pushToast({ kind: "error", message: detail });
-    }
-  };
-
   const sortedItems = [...items].sort((a, b) => a.id - b.id);
   const activeDistortion =
     selectedDistortion && distortionLibrary[selectedDistortion];
 
   const handleOpenSources = (item: Journal) => {
-    const list =
-      item.sources && item.sources.length ? item.sources : ragSamples;
+    const list = item.sources && item.sources.length ? item.sources : [];
     if (!list.length) {
       pushToast({
         kind: "info",
@@ -283,36 +265,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <div className="card p-5 border-white/60">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-semibold text-primaryDark">
-              เชื่อมกับแพทย์
-            </h3>
-            <p className="text-sm text-slate-600">
-              ใส่รหัสแพทย์เพื่อขอเชื่อมต่อและให้แพทย์เห็นสรุปของคุณ
-            </p>
-          </div>
-          <span className="pill bg-primary/10 text-primary">
-            ปลอดภัย • ควบคุมการแชร์
-          </span>
-        </div>
-        <div className="flex gap-3 mt-4">
-          <input
-            className="border border-slate-200 rounded-xl px-3 py-3 flex-1 focus:ring-2 focus:ring-primary/30 focus:border-primary"
-            placeholder="รหัสแพทย์"
-            value={doctorCode}
-            onChange={(e) => setDoctorCode(e.target.value)}
-          />
-          <button
-            className="btn-ghost"
-            disabled={!doctorCode.trim()}
-            onClick={handleConnectDoctor}
-          >
-            ส่งคำขอ
-          </button>
-        </div>
-      </div>
+      {/* แก้ไขที่ 2: ลบ section เชื่อมกับแพทย์ออก ผู้ใช้ทั่วไปไม่ควรรู้ว่ามีฟีเจอร์นี้ */}
 
       {activeDistortion && (
         <div className="fixed inset-0 bg-black/45 backdrop-blur-sm flex items-center justify-center z-[1040]">

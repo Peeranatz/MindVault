@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ToastMessage, ToastStack } from "../../../components/Toast";
 import { LoadingOverlay } from "../../../components/LoadingOverlay";
 
-const API = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8000";
+const API = process.env.NEXT_PUBLIC_API_BASE || "http://127.0.0.1:8001";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,6 +18,14 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [doctorCode, setDoctorCode] = useState("");
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  // ฟีเจอร์ที่ 3: รับ invite token จาก URL query string
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get("invite");
+    if (t) setInviteToken(t);
+  }, []);
 
   const pushToast = (toast: Omit<ToastMessage, "id">) => {
     const id = Date.now() + Math.random();
@@ -44,6 +52,8 @@ export default function RegisterPage() {
     try {
       const payload: any = { username, password, role };
       if (doctorCode.trim()) payload.doctor_code = doctorCode.trim();
+      // ฟีเจอร์ที่ 3: ส่ง invite_token ไปด้วยถ้ามี (เชื่อมผู้ป่วยกับแพทย์อัตโนมัติ)
+      if (inviteToken) payload.invite_token = inviteToken;
       await axios.post(`${API}/auth/register`, payload);
       // auto login
       const form = new URLSearchParams();
