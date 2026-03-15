@@ -1,0 +1,86 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Prompt:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    color-scheme: light;
+}
+
+body {
+    font-family:
+        "Manrope",
+        "Prompt",
+        system-ui,
+        -apple-system,
+        "Segoe UI",
+        sans-serif;
+    background: radial-gradient(
+        120% 120% at 15% 20%,
+        #f2fbff 0%,
+        #eef7f6 40%,
+        #f7f5ff 100%
+    );
+    color: #0f172a;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: theme("colors.primary");
+}
+
+.card {
+    @apply bg-white/90 border border-white/70 shadow-md shadow-slate-100 rounded-2xl;
+}
+
+.glass {
+    backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 25px 60px rgba(15, 118, 110, 0.08);
+}
+
+.pill {
+    @apply inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium;
+}
+
+.btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold text-white bg-primary shadow hover:-translate-y-0.5 transition transform hover:shadow-lg disabled:opacity-60 disabled:translate-y-0;
+}
+
+.btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-semibold text-primary bg-white border border-primary/20 hover:bg-primary/5 transition;
+}
+
+.fade-in {
+    animation: fadeIn 0.35s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.no-print {
+    /* elements hidden when printing */
+}
+
+@media print {
+    body {
+        background: #ffffff;
+    }
+    header,
+    .no-print {
+        display: none !important;
+    }
+    .print-section {
+        page-break-inside: avoid;
+    }
+}

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# FastAPI/Backend
+backend/.env
+backend/.env.local
+backend/*.db
+backend/sqlite*.db
+
+# Node/Next.js
+node_modules/
+.next/
+out/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Editors
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Tests/coverage caches
+.pytest_cache/
+coverage/
+htmlcov/
+.jest/
+.cache/
+
+# Build artifacts
+*.log
